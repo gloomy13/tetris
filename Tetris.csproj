@@ -43,15 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Bloczek.cs" />
+    <Compile Include="Bloczki\Bloczek.cs" />
     <Compile Include="Gra.cs" />
-    <Compile Include="Obiekt1.cs" />
-    <Compile Include="Obiekt2.cs" />
-    <Compile Include="Obiekt3.cs" />
-    <Compile Include="Obiekt4.cs" />
-    <Compile Include="Obiekt5.cs" />
-    <Compile Include="Obiekt6.cs" />
-    <Compile Include="Obiekt7.cs" />
+    <Compile Include="Bloczki\Kreska.cs" />
+    <Compile Include="Bloczki\Kwadrat.cs" />
+    <Compile Include="Bloczki\Elka.cs" />
+    <Compile Include="Bloczki\Relka.cs" />
+    <Compile Include="Bloczki\Rzygzak.cs" />
+    <Compile Include="Bloczki\Tetka.cs" />
+    <Compile Include="Bloczki\Zygzak.cs" />
     <Compile Include="Plansza.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

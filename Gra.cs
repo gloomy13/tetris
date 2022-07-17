@@ -7,46 +7,55 @@ using System.Threading.Tasks;
 
 namespace Tetris
 {
-    class Gra
+    internal class Gra
     {
-        int cols=10, rows=15;
-        public Plansza pl;
-        public Bloczek b;
-        Random r = new Random();
-        List<Bloczek> wszystkieBloczki;
-        private int punkty=0;
-        IEnumerable<Bloczek> aux;
-        public Gra(int c,int r){
-            cols = c;
-            rows = r;
-            pl = new Plansza(cols, rows);
-            aux = typeof(Bloczek).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Bloczek))).Select(t => (Bloczek)Activator.CreateInstance(t));
+        public Plansza Plansza { get; set; }
+        public Bloczek Bloczek { get; set; }
+        public int Cols { get; } = 10;
+        public int Rows { get; } = 15;
+        public Random Random { get; set; } = new Random();
+        public List<Bloczek> WszystkieBloczki { get; set; }
+        public int Punkty { get; set; } = 0;
+        public IEnumerable<Bloczek> Aux { get; set; }
+
+        public Gra(int cols, int rows)
+        {
+            Cols = cols;
+            Rows = rows;
+            Plansza = new Plansza(Cols, Rows);
+            Aux = typeof(Bloczek).Assembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Bloczek))).Select(t => (Bloczek)Activator.CreateInstance(t));
             NowyBloczek();
         }
-        private void KoniecGry() {
+
+        private void KoniecGry()
+        {
             Console.Clear();
             Console.WriteLine("KONIEC GRY!");
-            Console.WriteLine("WYNIK: "+punkty);
+            Console.WriteLine("WYNIK: " + Punkty);
         }
-        private bool SprawdźCzyKoniec() {
-            if (b.PosY == 0) return true;
+
+        private bool SprawdźCzyKoniec()
+        {
+            if (Bloczek.PosY == 0) return true;
             else return false;
         }
-        private void DrukPts() { Console.WriteLine("PUNKTY: " + punkty); }
+
+        private void DrukPts()
+        { Console.WriteLine("PUNKTY: " + Punkty); }
+
         public void NowyBloczek()
         {
-            wszystkieBloczki = aux.Cast<Bloczek>().ToList();
-            b = wszystkieBloczki[r.Next(wszystkieBloczki.Count)];
-            b.PozycjaStartowa(r.Next(cols - b.Sz));
-        } 
+            WszystkieBloczki = Aux.Cast<Bloczek>().ToList();
+            Bloczek = WszystkieBloczki[Random.Next(WszystkieBloczki.Count)];
+            Bloczek.PozycjaStartowa(Random.Next(Cols - Bloczek.Szerokość));
+        }
 
         public void Play()
         {
-            
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
             DrukPts();
-            pl.Druk();
+            Plansza.Druk();
             while (true)
             {
                 //--------------------------------controls
@@ -56,20 +65,22 @@ namespace Tetris
                     switch (k.Key)
                     {
                         case ConsoleKey.RightArrow:
-                            if (pl.KolizjaPrawo(b) == false)
-                                b.MoveRight();
+                            if (!Plansza.KolizjaPrawo(Bloczek))
+                                Bloczek.MoveRight();
                             break;
+
                         case ConsoleKey.LeftArrow:
-                            if (pl.KolizjaLewo(b) == false)
-                                b.MoveLeft();
+                            if (!Plansza.KolizjaLewo(Bloczek))
+                                Bloczek.MoveLeft();
                             break;
+
                         case ConsoleKey.UpArrow:
-                            if(pl.KolizjaObrót(b,true)==false)
-                                b.Obrót(true);
+                            Plansza.KolizjaObrót(Bloczek);
                             break;
+
                         case ConsoleKey.DownArrow:
-                            if (pl.KolizjaDół(b) == false)
-                                b.MoveDown();
+                            if (!Plansza.KolizjaDół(Bloczek))
+                                Bloczek.MoveDown();
                             break;
                     }
                 }
@@ -77,11 +88,11 @@ namespace Tetris
                 if (stopWatch.ElapsedMilliseconds > 1000)
                 {
                     stopWatch.Restart();
-                    pl.PłytkieCzyszczenie();
-                    if (pl.KolizjaDół(b) == false)
+                    Plansza.PłytkieCzyszczenie();
+                    if (!Plansza.KolizjaDół(Bloczek))
                     {
-                        b.MoveDown();
-                        pl.DodajBloczek(b);
+                        Bloczek.MoveDown();
+                        Plansza.DodajBloczek(Bloczek);
                     }
                     else
                     {
@@ -90,29 +101,32 @@ namespace Tetris
                             KoniecGry();
                             break;
                         }
-                        b.ZamróźBloczek();
-                        pl.DodajBloczek(b);
+                        Bloczek.ZamróźBloczek();
+                        Plansza.DodajBloczek(Bloczek);
                         NowyBloczek();
-                        int ilośćLinii = pl.Linia();
+                        int ilośćLinii = Plansza.Linia();
                         switch (ilośćLinii)
                         {
                             case 1:
-                                punkty += 5;
+                                Punkty += 5;
                                 break;
+
                             case 2:
-                                punkty += 15;
+                                Punkty += 15;
                                 break;
+
                             case 3:
-                                punkty += 45;
+                                Punkty += 45;
                                 break;
+
                             case 4:
-                                punkty += 75;
+                                Punkty += 75;
                                 break;
                         }
                     }
                     Console.Clear();
                     DrukPts();
-                    pl.Druk();
+                    Plansza.Druk();
                 }
             }
         }
